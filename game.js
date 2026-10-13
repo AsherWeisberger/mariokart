@@ -228,7 +228,7 @@ function setupRace(charIdx) {
   order.forEach((ci, slot) => {
     const i = (N - 8 - slot * 7) % N, side = slot % 2 ? -3.5 : 3.5, p = P[i], l = L[i];
     const k = { ...makeKart(CHARS[ci]), ch: CHARS[ci], ai: ci !== charIdx, pos: new THREE.Vector3(p.x + l.x * side, 0, p.z + l.z * side), h: Math.atan2(T[i].x, T[i].z), speed: 0, idx: i, lap: 0, maxIdx: 0, checkpoint: false, drift: 0, driftCharge: 0, boost: 0, spin: 0, item: null, roulette: 0, aiItemT: rnd(1, 4), aiOff: rnd(-4, 4), aiSkill: 0.92 + slot * 0.012, finished: false, finishT: 0, hop: 0, steerVis: 0 };
-    karts.push(k); if (!k.ai) player = k;
+    k.root.position.copy(k.pos); k.root.rotation.y = k.h; karts.push(k); if (!k.ai) player = k;
   });
 }
 
@@ -472,7 +472,7 @@ function loop(now) {
   if (state === 'title' || state === 'select') {
     titleT += dt * 0.12; const c = P[0];
     camera.position.set(c.x + Math.cos(titleT) * 26, 9, c.z - 10 + Math.sin(titleT) * 26); camera.lookAt(c.x, 1, c.z - 14);
-    if (POSTER) { { const a = P[N - 75], b = P[N - 20]; camera.position.set(a.x + L[N-75].x * 6, 7, a.z + L[N-75].z * 6); camera.lookAt(b.x, 1.5, b.z); } }
+    if (POSTER) { { const a = P[N - 58], b = P[N - 20]; camera.position.set(a.x + L[N-58].x * 4, 5, a.z + L[N-58].z * 6); camera.lookAt(b.x, 1.5, b.z); } }
   } else {
     for (let i = 0; i < TS; i++) sim(TS > 1 ? 1 / 30 : dt);
     if ((hudT += dt) > 0.05) { hudT = 0; updateHUD(); }

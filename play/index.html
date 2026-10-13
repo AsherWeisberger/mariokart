@@ -1,0 +1,61 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Mario Kart — Play</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;font-family:"Arial Rounded MT Bold","Trebuchet MS",Arial,sans-serif;touch-action:none;color:#fff}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+.hidden{display:none!important}
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:5}
+#title{background:radial-gradient(ellipse at center,rgba(0,0,0,.15),rgba(0,0,0,.55));cursor:pointer}
+.logo{font-size:min(15vw,96px);font-weight:900;font-style:italic;line-height:.9;letter-spacing:-2px;text-shadow:0 4px 0 #b00,0 8px 18px rgba(0,0,0,.5)}
+.logo span{display:block;color:#ffd400;font-size:.62em;text-shadow:0 4px 0 #a06a00,0 8px 18px rgba(0,0,0,.5)}
+.pill{margin-top:3vmin;border:2px solid #fff;border-radius:99px;padding:.5em 1.1em;background:rgba(20,30,60,.7);font-size:min(3.6vw,18px)}
+.tap{margin-top:5vmin;font-size:min(6vw,30px);font-weight:900;animation:pulse 1s infinite alternate;background:#e52521;padding:.4em 1.2em;border-radius:14px;box-shadow:0 5px 0 #900}
+@keyframes pulse{to{transform:scale(1.08)}}
+#select{background:rgba(10,20,50,.6)}
+#select h2{margin:0 0 3vmin;font-size:min(7vw,36px);font-style:italic;text-shadow:0 3px 0 #b00}
+#chars{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5vmin;width:min(92vw,560px)}
+.char{background:rgba(255,255,255,.92);color:#222;border:4px solid transparent;border-radius:14px;padding:1.6vmin;cursor:pointer;font:inherit;display:flex;flex-direction:column;align-items:center}
+.char.sel,.char:hover{border-color:#ffd400;transform:scale(1.05)}
+.av{width:min(13vw,64px);height:min(13vw,64px);border-radius:50%;border:5px solid;display:flex;align-items:center;justify-content:center;font-size:min(7vw,34px);font-weight:900;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.5)}
+.char b{font-size:min(4vw,18px);margin-top:.4em}.char small{font-size:min(2.4vw,11px);color:#666;margin-top:.2em}
+.hint{margin-top:3vmin;font-size:min(3vw,14px);opacity:.85}
+#hud{position:fixed;inset:0;pointer-events:none;z-index:4;font-weight:900;text-shadow:0 2px 0 #000,0 0 6px rgba(0,0,0,.6)}
+#lap{position:absolute;top:2.5vmin;right:3vmin;font-size:min(6vw,30px);font-style:italic}
+#time{position:absolute;top:calc(2.5vmin + min(7vw,34px));right:3vmin;font-size:min(4vw,18px)}
+#pos{position:absolute;bottom:3vmin;right:3vmin;font-size:min(16vw,84px);font-style:italic;color:#fff}
+#touchon #pos{bottom:auto}
+#pos.p1{color:#ffd400}#pos.p2{color:#e0e0e0}#pos.p3{color:#ff9a4d}
+#item{position:absolute;top:2.5vmin;left:3vmin;width:min(17vw,80px);height:min(17vw,80px);border-radius:50%;background:rgba(0,0,0,.45);border:4px solid #fff;display:flex;align-items:center;justify-content:center;font-size:min(10vw,46px)}
+#big{position:absolute;top:30%;left:0;right:0;text-align:center;font-size:min(22vw,120px);font-style:italic;color:#ffd400;text-shadow:0 6px 0 #b00,0 10px 20px rgba(0,0,0,.6)}
+#big.pop{animation:pop .4s ease-out}@keyframes pop{from{transform:scale(2);opacity:0}}
+#touch{position:fixed;inset:0;z-index:6;pointer-events:none}
+#touch button{pointer-events:auto;position:absolute;bottom:4vmin;width:min(20vw,96px);height:min(20vw,96px);border-radius:50%;border:3px solid rgba(255,255,255,.85);background:rgba(0,0,0,.35);color:#fff;font-size:min(8vw,38px);font-weight:900;touch-action:none}
+#touch button.on{background:rgba(255,212,0,.6)}
+[data-btn=left]{left:3vmin}[data-btn=right]{left:calc(6vmin + min(20vw,96px))}
+[data-btn=drift]{right:3vmin}[data-btn=item]{right:3vmin;bottom:calc(7vmin + min(20vw,96px))!important;width:min(16vw,76px)!important;height:min(16vw,76px)!important;font-size:min(6vw,28px)!important}
+[data-btn=brake]{right:calc(6vmin + min(20vw,96px));width:min(14vw,66px)!important;height:min(14vw,66px)!important;font-size:min(4vw,18px)!important}
+body.touch #pos{bottom:auto;top:calc(5vmin + min(17vw,80px));left:3vmin;right:auto;font-size:min(11vw,56px)}
+#finish{background:rgba(10,20,50,.65);z-index:7}
+#ftitle{font-size:min(9vw,46px);font-style:italic;margin:0 0 2vmin;color:#ffd400;text-shadow:0 4px 0 #b00}
+#results{list-style:none;padding:0;margin:0;width:min(80vw,380px)}
+#results li{display:flex;gap:1em;background:rgba(255,255,255,.9);color:#222;margin:.6vmin 0;padding:.45em .8em;border-radius:9px;font-size:min(3.8vw,18px)}
+#results li.me{background:#ffd400}#results b{flex:1;text-align:left}
+.btns{margin-top:3vmin;display:flex;gap:3vmin}
+.btns button{font:inherit;font-weight:900;font-size:min(4.5vw,22px);border:0;border-radius:12px;padding:.5em 1em;background:#e52521;color:#fff;box-shadow:0 4px 0 #900;cursor:pointer}
+.btns button+button{background:#2a4fd6;box-shadow:0 4px 0 #123}
+#mute{position:fixed;z-index:9;top:2.5vmin;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.35);border:0;border-radius:50%;width:38px;height:38px;font-size:18px;cursor:pointer}
+body.poster #title .tap,body.poster #mute{display:none}
+body.poster .logo{font-size:150px}body.poster .pill{font-size:30px}
+</style></head><body>
+<canvas id="c"></canvas>
+<div id="title" class="screen"><div class="logo">MARIO KART<span>ONLINE</span></div><div class="pill">Mario Kart — right in your browser</div><div class="tap">▶ TAP TO PLAY</div></div>
+<div id="select" class="screen hidden"><h2>SELECT DRIVER</h2><div id="chars"></div><div class="hint">Arrows/WASD steer · Space drift · Shift/X item — or touch buttons</div></div>
+<div id="hud" class="hidden"><div id="item"></div><div id="lap"></div><div id="time"></div><div id="pos"></div><div id="big"></div></div>
+<div id="touch" class="hidden"><button data-btn="left">◀</button><button data-btn="right">▶</button><button data-btn="brake">BRK</button><button data-btn="drift">DRIFT</button><button data-btn="item">ITEM</button></div>
+<div id="finish" class="screen hidden"><h2 id="ftitle"></h2><ol id="results"></ol><div class="btns"><button id="again">RACE AGAIN</button><button id="menu">DRIVERS</button></div></div>
+<button id="mute">🔊</button>
+<script>if(matchMedia('(pointer: coarse)').matches||'ontouchstart' in window)document.body.classList.add('touch')</script>
+<script type="module" src="../game.js"></script>
+</body></html>
